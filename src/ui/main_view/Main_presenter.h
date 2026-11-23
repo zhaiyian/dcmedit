@@ -7,6 +7,7 @@
 #include "ui/main_view/IMain_view.h"
 #include "ui/split_view/Split_presenter.h"
 #include <filesystem>
+#include <vector>
 
 namespace fs = std::filesystem;
 
@@ -14,6 +15,10 @@ class Main_presenter
 {
 public:
     Main_presenter(IMain_view&);
+
+    /// Opens the given files, e.g. the ones that were passed on the command
+    /// line when a file is opened from the explorer.
+    void open_files(const std::vector<fs::path>&);
 
 private:
     enum class Presenter_state {startup, editor};
@@ -25,7 +30,7 @@ private:
     void update_window_title();
 
     void new_file();
-    void open_files();
+    void open_files_dialog();
     void open_folder();
     void save_file();
     void save_file_as();

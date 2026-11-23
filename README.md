@@ -6,6 +6,9 @@ dcmedit is a DICOM editor for Windows, Linux and macOS, written in C++ using Qt 
 
 - Add, edit and delete data elements. In single and multiple files.
 - See changes to the image immediately.
+- Open .dcm files directly from the Windows explorer: double click, "Open with" or
+  "Open with dcmedit" in the context menu. The association is registered for the
+  current user the first time the application is started.
 
 ![Screenshot](screenshot1.png)
 

@@ -1,5 +1,6 @@
 #include "ui/open_files_dialog/Open_files_presenter.h"
 
+#include "common/Path_util.h"
 #include "models/Dicom_files.h"
 #include "ui/open_files_dialog/IOpen_files_view.h"
 #include "ui/progressbar/Progress_presenter.h"
@@ -17,8 +18,10 @@ Open_files_presenter::Open_files_presenter(IOpen_files_view& view, Dicom_files& 
       m_dicom_files(dicom_files) {}
 
 void Open_files_presenter::show_dialog() {
-    std::vector<fs::path> file_paths = m_view.show_file_dialog();
+    open_files(m_view.show_file_dialog());
+}
 
+void Open_files_presenter::open_files(const std::vector<fs::path>& file_paths) {
     if (file_paths.empty()) {
         return;
     }
@@ -36,7 +39,7 @@ void Open_files_presenter::show_dialog() {
                 m_dicom_files.open_file(file_path);
             }
             catch(const std::exception& e) {
-                file_errors.push_back("Failed to open file: " + file_path.string() +
+                file_errors.push_back("Failed to open file: " + Path_util::to_utf8(file_path) +
                     "\nReason: " + std::string(e.what()));
             }
             progress_presenter.increment_progress();

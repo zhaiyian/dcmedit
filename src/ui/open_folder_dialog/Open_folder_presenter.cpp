@@ -1,5 +1,6 @@
 #include "ui/open_folder_dialog/Open_folder_presenter.h"
 
+#include "common/Path_util.h"
 #include "logging/Log.h"
 #include "models/Dicom_files.h"
 #include "ui/open_folder_dialog/IOpen_folder_view.h"
@@ -37,7 +38,7 @@ void Open_folder_presenter::show_dialog() {
                 }
             }
             catch(const std::exception& e) {
-                Log::error("Failed to open file: " + entry.path().string() +
+                Log::error("Failed to open file: " + Path_util::to_utf8(entry.path()) +
                     "\nReason: " + std::string(e.what()));
             }
         }

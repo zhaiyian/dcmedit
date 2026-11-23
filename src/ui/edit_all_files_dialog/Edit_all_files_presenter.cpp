@@ -2,6 +2,7 @@
 
 #include "common/Dicom_util.h"
 #include "common/Exceptions.h"
+#include "common/Path_util.h"
 #include "models/Dicom_files.h"
 #include "ui/edit_all_files_dialog/IEdit_all_files_view.h"
 
@@ -46,13 +47,13 @@ void Edit_all_files_presenter::apply() {
         }
         catch(const Tag_path_not_found_error& e) {
             if(mode == IEdit_all_files_view::Mode::set) {
-                file_errors.push_back(file->get_path().string() +
+                file_errors.push_back(Path_util::to_utf8(file->get_path()) +
                     "\nReason: " + std::string(e.what()));
             }
             continue;
         }
         catch(const std::exception& e) {
-            file_errors.push_back(file->get_path().string() +
+            file_errors.push_back(Path_util::to_utf8(file->get_path()) +
                 "\nReason: " + std::string(e.what()));
         }
         file->set_unsaved_changes(true);

@@ -1,6 +1,7 @@
 #include "models/Dataset_model.h"
 
 #include "common/Dicom_util.h"
+#include "common/Path_util.h"
 #include "logging/Log.h"
 
 #include <array>
@@ -188,8 +189,9 @@ void Dataset_model::set_value_from_file(const QModelIndex& index, const std::str
     if(element == nullptr) {
         throw std::runtime_error("failed to get element");
     }
-    DcmInputFileStream file_stream(file_path.c_str());
-    const auto file_size = static_cast<uint32_t>(OFStandard::getFileSize(file_path.c_str()));
+    const OFFilename file_name = Path_util::to_offilename(Path_util::from_utf8(file_path));
+    DcmInputFileStream file_stream(file_name);
+    const auto file_size = static_cast<uint32_t>(OFStandard::getFileSize(file_name));
 
     if(file_size % 2) {
         throw std::runtime_error("file size must be even");

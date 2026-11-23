@@ -1,5 +1,6 @@
 #include "Dicom_file.h"
 
+#include "common/Path_util.h"
 #include "logging/Log.h"
 
 #include <dcmtk/dcmdata/dcdeftag.h>
@@ -11,15 +12,17 @@
 Dicom_file::Dicom_file(const fs::path& path)
     : m_path(path),
       m_unsaved_changes(false) {
-    if(!OFStandard::fileExists(path.c_str())) {
+    const OFFilename file_name = Path_util::to_offilename(path);
+
+    if(!OFStandard::fileExists(file_name)) {
         throw std::runtime_error("file not found");
     }
-    OFCondition status = m_file.loadFile(path.c_str());
+    OFCondition status = m_file.loadFile(file_name);
 
     if(status.bad()) {
         throw std::runtime_error(status.text());
     }
-    Log::debug("Loaded file: " + m_path.string());
+    Log::debug("Loaded file: " + Path_util::to_utf8(m_path));
 }
 
 bool Dicom_file::is_dicomdir() {
@@ -40,24 +43,25 @@ void Dicom_file::save_file() {
 }
 
 void Dicom_file::save_file_as(const fs::path& path) {
+    const OFFilename file_name = Path_util::to_offilename(path);
     OFCondition status = m_file.getDataset()->loadAllDataIntoMemory();
 
     if(status.good()) {
         E_TransferSyntax original_transfer = m_file.getDataset()->getOriginalXfer();
         E_TransferSyntax new_transfer = original_transfer != EXS_Unknown ? original_transfer : EXS_LittleEndianExplicit;
-        status = m_file.saveFile(path.c_str(), new_transfer);
+        status = m_file.saveFile(file_name, new_transfer);
     }
     if(status.bad()) {
         throw std::runtime_error(status.text());
     }
     m_path = path;
     m_unsaved_changes = false;
-    Log::debug("Saved file: " + path.string());
+    Log::debug("Saved file: " + Path_util::to_utf8(path));
 }
 
 void Dicom_file::create_new_file(const fs::path& path) {
     DcmFileFormat file;
-    OFCondition status = file.saveFile(path.c_str(), EXS_LittleEndianExplicit);
+    OFCondition status = file.saveFile(Path_util::to_offilename(path), EXS_LittleEndianExplicit);
 
     if(status.bad()) {
         throw std::runtime_error(status.text());

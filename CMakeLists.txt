@@ -21,10 +21,16 @@ add_executable(dcmedit WIN32 MACOSX_BUNDLE
   assets/assets.qrc
   src/common/App_info.cpp
   src/common/App_info.h
+  src/common/Command_line.cpp
+  src/common/Command_line.h
   src/common/Dicom_util.cpp
   src/common/Dicom_util.h
   src/common/Exceptions.cpp
   src/common/Exceptions.h
+  src/common/File_association.cpp
+  src/common/File_association.h
+  src/common/Path_util.cpp
+  src/common/Path_util.h
   src/logging/Console_logger.cpp
   src/logging/Console_logger.h
   src/logging/Log.cpp
@@ -140,5 +146,10 @@ target_link_libraries(dcmedit
   Qt5::Widgets
   "${DCMTK_LIBRARIES}"
 )
+
+if(WIN32)
+  # Registry access for the .dcm file association and SHChangeNotify.
+  target_link_libraries(dcmedit PRIVATE advapi32 shell32)
+endif()
 
 add_subdirectory(test)

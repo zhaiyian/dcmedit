@@ -1,4 +1,5 @@
 #include "common/Exceptions.h"
+#include "common/Path_util.h"
 #include "models/Dicom_files.h"
 #include "mocks/Progress_token_stub.h"
 #include "test_constants.h"
@@ -56,6 +57,25 @@ TEST_CASE("Create a new file") {
         dataset.putAndInsertString(DCM_PatientName, "Batman");
         files.save_current_file_as(new_file);
 	}
+}
+
+TEST_CASE("Create, save and open a file in a directory with non-ASCII characters") {
+    // "中文目录" encoded as UTF-8, written as escape sequences so that the test
+    // does not depend on the encoding of this source file.
+    const std::string dir_name = "\xe4\xb8\xad\xe6\x96\x87\xe7\x9b\xae\xe5\xbd\x95";
+    Temp_dir temp_dir;
+    const fs::path dir = temp_dir.path() / Path_util::from_utf8(dir_name);
+    fs::create_directory(dir);
+    const fs::path file_path = dir / "new-file.dcm";
+
+    Dicom_files files;
+    files.create_new_file(file_path);
+    CHECK(fs::exists(file_path));
+
+    Dicom_files reopened_files;
+    reopened_files.open_file(file_path);
+    CHECK(reopened_files.get_files().size() == 1);
+    CHECK(reopened_files.get_current_file() != nullptr);
 }
 
 TEST_CASE("Check if any file has unsaved changes") {

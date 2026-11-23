@@ -7,6 +7,8 @@ add_executable(unit-test
   ../src/common/Dicom_util.h
   ../src/common/Exceptions.cpp
   ../src/common/Exceptions.h
+  ../src/common/Path_util.cpp
+  ../src/common/Path_util.h
   ../src/logging/Console_logger.cpp
   ../src/logging/Console_logger.h
   ../src/logging/Log.cpp

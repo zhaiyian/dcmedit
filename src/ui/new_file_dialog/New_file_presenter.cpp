@@ -1,5 +1,6 @@
 #include "ui/new_file_dialog/New_file_presenter.h"
 
+#include "common/Path_util.h"
 #include "models/Dicom_files.h"
 
 #include <filesystem>
@@ -20,7 +21,7 @@ void New_file_presenter::show_dialog() {
         m_dicom_files.create_new_file(file_path);
     }
     catch(const std::exception& e) {
-        m_view.show_error("Failed to create file: " + file_path.string() +
+        m_view.show_error("Failed to create file: " + Path_util::to_utf8(file_path) +
             "\nReason: " + std::string(e.what()));
     }
 }

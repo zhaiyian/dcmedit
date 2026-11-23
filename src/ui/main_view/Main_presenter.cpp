@@ -1,6 +1,7 @@
 #include "ui/main_view/Main_presenter.h"
 
 #include "common/App_info.h"
+#include "common/Path_util.h"
 #include "models/Dicom_files.h"
 #include "ui/edit_all_files_dialog/Edit_all_files_presenter.h"
 #include "ui/edit_all_files_dialog/IEdit_all_files_view.h"
@@ -28,7 +29,7 @@ Main_presenter::Main_presenter(IMain_view& view)
 
 void Main_presenter::setup_event_callbacks() {
     m_view.new_file_clicked.add_callback([this] {new_file();});
-    m_view.open_files_clicked.add_callback([this] {open_files();});
+    m_view.open_files_clicked.add_callback([this] {open_files_dialog();});
     m_view.open_folder_clicked.add_callback([this] {open_folder();});
     m_view.save_file_clicked.add_callback([this] {save_file();});
     m_view.save_file_as_clicked.add_callback([this] {save_file_as();});
@@ -71,10 +72,19 @@ void Main_presenter::set_editor_view() {
     m_view.set_editor_view();
 }
 
-void Main_presenter::open_files() {
+void Main_presenter::open_files_dialog() {
     std::unique_ptr<IOpen_files_view> view = m_view.create_open_files_view();
     Open_files_presenter presenter(*view, m_files);
     presenter.show_dialog();
+}
+
+void Main_presenter::open_files(const std::vector<fs::path>& file_paths) {
+    if(file_paths.empty()) {
+        return;
+    }
+    std::unique_ptr<IOpen_files_view> view = m_view.create_open_files_view();
+    Open_files_presenter presenter(*view, m_files);
+    presenter.open_files(file_paths);
 }
 
 void Main_presenter::open_folder() {
@@ -107,7 +117,7 @@ void Main_presenter::save_file_as(const fs::path& path) {
         m_files.save_current_file_as(path);
     }
     catch(const std::exception& e) {
-        m_view.show_error("Error", "Failed to save file: " + path.string() +
+        m_view.show_error("Error", "Failed to save file: " + Path_util::to_utf8(path) +
             "\nReason: " + std::string(e.what()));
     }
 }
@@ -162,7 +172,7 @@ void Main_presenter::update_window_title() {
         }
         m_view.set_window_modified(file->has_unsaved_changes());
 
-        std::string title = file->get_path().string() + "[*] - " + App_info::name;
+        std::string title = Path_util::to_utf8(file->get_path()) + "[*] - " + App_info::name;
         m_view.set_window_title(title);
     }
 }

@@ -1,5 +1,6 @@
 #include "ui/open_files_dialog/Open_files_view.h"
 
+#include "common/Path_util.h"
 #include "ui/progressbar/Progress_view.h"
 
 #include <QFileDialog>
@@ -13,7 +14,7 @@ std::vector<fs::path> Open_files_view::show_file_dialog() {
     std::vector<fs::path> file_paths;
 
     for(const QString& path : file_list) {
-        file_paths.push_back(path.toStdString());
+        file_paths.push_back(Path_util::from_utf8(path.toStdString()));
     }
     return file_paths;
 }

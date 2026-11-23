@@ -1,5 +1,6 @@
 #include "ui/dataset_view/Dataset_presenter.h"
 
+#include "common/Path_util.h"
 #include "models/Dataset_model.h"
 #include "ui/add_element_dialog/Add_element_presenter.h"
 #include "ui/add_element_dialog/IAdd_element_view.h"
@@ -8,6 +9,7 @@
 #include "ui/edit_value_dialog/IEdit_value_view.h"
 
 #include <exception>
+#include <fstream>
 #include <QModelIndex>
 #include <QPoint>
 
@@ -92,7 +94,7 @@ void Dataset_presenter::save_value_to_file(const QModelIndex& index) {
             "Reason: " + std::string(status.text()));
         return;
     }
-    std::ofstream file(file_path, std::ios_base::binary);
+    std::ofstream file(Path_util::from_utf8(file_path), std::ios_base::binary);
     file.write(buffer.data(), length);
 
     if(!file.good()) {

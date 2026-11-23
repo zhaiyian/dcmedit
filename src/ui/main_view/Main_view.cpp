@@ -1,5 +1,6 @@
 #include "ui/main_view/Main_view.h"
 
+#include "common/Path_util.h"
 #include "ui/about_dialog/About_view.h"
 #include "ui/edit_all_files_dialog/Edit_all_files_view.h"
 #include "ui/new_file_dialog/New_file_view.h"
@@ -66,7 +67,7 @@ void Main_view::show_error(const std::string& title, const std::string& text) {
 
 fs::path Main_view::show_save_file_dialog() {
     QString file_path = QFileDialog::getSaveFileName(this, "Save file as");
-    return file_path.toStdString();
+    return Path_util::from_utf8(file_path.toStdString());
 }
 
 bool Main_view::show_discard_dialog() {

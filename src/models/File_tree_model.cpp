@@ -1,5 +1,6 @@
 #include "models/File_tree_model.h"
 
+#include "common/Path_util.h"
 #include "logging/Log.h"
 
 #include <algorithm>
@@ -92,7 +93,7 @@ void File_tree_model::add_items() {
         dataset.findAndGetString(DCM_SeriesInstanceUID, id);
         QStandardItem* series_item = find_or_create_item<QString>(study_item, text, id);
 
-        std::string file_path = file->get_path().string();
+        std::string file_path = Path_util::to_utf8(file->get_path());
         QStandardItem* file_item = find_or_create_item<Dicom_file*>(series_item, QString::fromStdString(file_path), file.get());
         decorate_file_item(*file_item);
     }
@@ -162,7 +163,7 @@ bool File_tree_model::is_file_item_invalid(const QStandardItem& item) {
 
 void File_tree_model::decorate_file_item(QStandardItem& file_item) {
     auto file = file_item.data().value<Dicom_file*>();
-    std::string file_path = file->get_path().string();
+    std::string file_path = Path_util::to_utf8(file->get_path());
 
     if(file->has_unsaved_changes()) {
         file_path += "*";
