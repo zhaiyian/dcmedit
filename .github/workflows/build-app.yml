@@ -12,23 +12,23 @@ defaults:
 
 jobs:
   Build-windows:
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: false
 
       - name: Cache vcpkg
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
-          path: ~\AppData\Local\vcpkg\archives
+          path: ~/AppData/Local/vcpkg/archives
           key: vcpkg-${{ runner.os }}-${{ github.run_id }}
           restore-keys: vcpkg-${{ runner.os }}
 
       - name: Install Qt
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
           version: 5.15.2
           cache: true
@@ -48,29 +48,29 @@ jobs:
         run: python3 ./scripts/package_windows.py ./build/${{ env.CMAKE_BUILD_TYPE }}/dcmedit.exe ./app-package/
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dcmedit-windows-${{ env.CMAKE_BUILD_TYPE }}-${{ env.DCMEDIT_VERSION }}
-          path: .\app-package
+          path: ./app-package
 
   Build-macos:
-    runs-on: macos-11
+    runs-on: macos-13
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: false
 
       - name: Cache vcpkg
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/vcpkg/archives
           key: vcpkg-${{ runner.os }}-${{ github.run_id }}
           restore-keys: vcpkg-${{ runner.os }}
 
       - name: Install Qt
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
           version: 5.15.2
           cache: true
@@ -90,35 +90,35 @@ jobs:
         run: python3 ./scripts/package_macos.py ./build/dcmedit.app ./app-package/
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dcmedit-macos-${{ env.CMAKE_BUILD_TYPE }}-${{ env.DCMEDIT_VERSION }}
           path: ./app-package
 
   Build-linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: false
 
       - name: Cache vcpkg
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/vcpkg/archives
           key: vcpkg-${{ runner.os }}-${{ github.run_id }}
           restore-keys: vcpkg-${{ runner.os }}
 
       - name: Install Qt
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
           version: 5.15.2
           cache: true
 
       - name: Configure
-        run: CXX=g++-10 cmake --preset=gcc-clang -DCMAKE_TOOLCHAIN_FILE=/usr/local/share/vcpkg/scripts/buildsystems/vcpkg.cmake .
+        run: cmake --preset=gcc-clang -DCMAKE_TOOLCHAIN_FILE=/usr/local/share/vcpkg/scripts/buildsystems/vcpkg.cmake .
 
       - name: Build
         run: |
@@ -136,7 +136,7 @@ jobs:
           python3 ./scripts/package_linux.py ./build/dcmedit ./app-package/
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dcmedit-linux-${{ env.CMAKE_BUILD_TYPE }}-${{ env.DCMEDIT_VERSION }}
           path: ./app-package

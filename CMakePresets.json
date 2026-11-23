@@ -15,7 +15,7 @@
       "name": "msvc",
       "displayName": "MSVC",
       "description": "Default build options for MSVC",
-      "generator": "Visual Studio 16 2019",
+      "generator": "Visual Studio 17 2022",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
         "CMAKE_CXX_FLAGS": "/W4 /WX /EHsc"
