@@ -149,7 +149,7 @@ target_link_libraries(dcmedit
 
 if(WIN32)
   # Registry access for the .dcm file association and SHChangeNotify.
-  target_link_libraries(dcmedit PRIVATE advapi32 shell32)
+  target_link_libraries(dcmedit advapi32 shell32)
 endif()
 
 add_subdirectory(test)
